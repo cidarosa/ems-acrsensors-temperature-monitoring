@@ -6,6 +6,7 @@ import com.github.cidarosa.acrsensor.temperature.monitoring.domain.model.SensorM
 import com.github.cidarosa.acrsensor.temperature.monitoring.domain.repository.SensorMonitoringRepository;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/sensors/{sensorId}/monitoring")
@@ -50,9 +53,14 @@ public class SensorMonitoringController {
 
     @DeleteMapping("/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @SneakyThrows //assim não precisa declarar exception
     public void disable(@PathVariable TSID sensorId) {
 
         SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
+        if (!sensorMonitoring.getEnbled()){
+            //forçando espera demasiada
+            Thread.sleep(Duration.ofSeconds(10));
+        }
         sensorMonitoring.setEnbled(false);
         sensorMonitoringRepository.saveAndFlush(sensorMonitoring);
     }
