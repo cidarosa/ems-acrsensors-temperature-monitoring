@@ -4,5 +4,5 @@ import com.github.cidarosa.acrsensor.temperature.monitoring.domain.model.SensorA
 import com.github.cidarosa.acrsensor.temperature.monitoring.domain.model.SensorId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SensorAltertRepository extends JpaRepository<SensorAlert, SensorId> {
+public interface SensorAlertRepository extends JpaRepository<SensorAlert, SensorId> {
 }

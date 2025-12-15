@@ -4,7 +4,7 @@ import com.github.cidarosa.acrsensor.temperature.monitoring.api.model.SensorAler
 import com.github.cidarosa.acrsensor.temperature.monitoring.api.model.SensorAlertOutputDTO;
 import com.github.cidarosa.acrsensor.temperature.monitoring.domain.model.SensorAlert;
 import com.github.cidarosa.acrsensor.temperature.monitoring.domain.model.SensorId;
-import com.github.cidarosa.acrsensor.temperature.monitoring.domain.repository.SensorAltertRepository;
+import com.github.cidarosa.acrsensor.temperature.monitoring.domain.repository.SensorAlertRepository;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class SensorAlertController {
 
-    private final SensorAltertRepository sensorAltertRepository;
+    private final SensorAlertRepository sensorAltertRepository;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -40,7 +40,7 @@ public class SensorAlertController {
     @ResponseStatus(HttpStatus.OK)
     public SensorAlertOutputDTO createOrUpdate(@PathVariable TSID sensorId,
                                                @RequestBody SensorAlertInputDTO inputDtO) {
-        SensorAlert sensorAlert = findByIdOrUpdate(sensorId);
+        SensorAlert sensorAlert = findByIdOrDefault(sensorId);
         sensorAlert.setMaxTemperature(inputDtO.getMaxTemperature());
         sensorAlert.setMinTemperature(inputDtO.getMinTemperature());
         sensorAltertRepository.saveAndFlush(sensorAlert);
@@ -58,7 +58,7 @@ public class SensorAlertController {
         sensorAltertRepository.delete(sensorAlert);
     }
 
-    private SensorAlert findByIdOrUpdate(TSID sensorId) {
+    private SensorAlert findByIdOrDefault(TSID sensorId) {
         return sensorAltertRepository.findById(new SensorId(sensorId))
                 .orElse(SensorAlert.builder()
                         .id(new SensorId(sensorId))
